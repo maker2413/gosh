@@ -1,0 +1,4 @@
+#+TITLE: Oh my gosh! Yet another worthless shell!
+
+~gosh~ is going to be your favorite shell you have heard about today! Especially
+if you have no idea what a shell is.
