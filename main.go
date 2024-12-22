@@ -3,21 +3,17 @@ package main
 import (
 	"fmt"
 	"os"
-	"strings"
-	"time"
 
 	"golang.org/x/term"
 )
 
-func rewrite() {
-	fmt.Printf("%d", 1000000000)
-	time.Sleep(1 * time.Second)
-	for i := 10; i >= 0; i-- {
-		fmt.Printf("\033[2K\r")
-		time.Sleep(1 * time.Second)
-		fmt.Printf("%d", i)
+func rewrite(s string) {
+	fmt.Printf("\033[2K\r")
+	for i := 0; i <= len(s); i++ {
+		fmt.Print(" ")
 	}
-	fmt.Println()
+	fmt.Printf("\033[2K\r")
+	fmt.Printf(":> %s", s)
 }
 
 func getKey() []byte {
@@ -41,48 +37,37 @@ func getKey() []byte {
 	}
 
 	return b
-
-	// for {
-	// 	// Read a single byte
-	// 	b, err := term.ReadByte()
-	// 	if err != nil {
-	// 		panic(err)
-	// 	}
-
-	// 	switch b {
-	// 	case 27: // ESC
-	// 		b2, _ := term.ReadByte()
-	// 		if b2 == 91 { // '['
-	// 			b3, _ := term.ReadByte()
-	// 			switch b3 {
-	// 			case 65:
-	// 				fmt.Println("Up arrow")
-	// 			case 66:
-	// 				fmt.Println("Down arrow")
-	// 			case 67:
-	// 				fmt.Println("Right arrow")
-	// 			case 68:
-	// 				fmt.Println("Left arrow")
-	// 			}
-	// 		}
-	// 	default:
-	// 		fmt.Printf("Key pressed: %v\n", b)
-	// 	}
-	// }
 }
 
-func readUserInput() {
-	var line strings.Builder
+func getCommand() string {
+	var line string
 	fmt.Print(":> ")
 
 	for {
 		k := getKey()
-		if k[0] == byte(13) {
-			fmt.Println(line)
-			break
+		switch k[0] {
+		case 13:
+			return line
+		case 127:
+			if len(line) > 0 {
+				line = line[0 : len(line)-1]
+			}
+
+			rewrite(line)
+		default:
+			fmt.Print(string(k[0]))
+			line = line + string(k[0])
+		}
+	}
+}
+
+func readUserInput() {
+	for {
+		command := getCommand()
+		if command == "exit" {
+			return
 		} else {
-			fmt.Print(string(k))
-			line.WriteString(string(k))
+			fmt.Printf("\n%s\n", command)
 		}
 	}
 }
@@ -90,6 +75,7 @@ func readUserInput() {
 func main() {
 	readUserInput()
 
-	// rewrite()
+	//fmt.Println(getKey())
 
+	// rewrite()
 }
