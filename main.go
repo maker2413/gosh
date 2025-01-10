@@ -46,9 +46,46 @@ func getCommand() string {
 	for {
 		k := getKey()
 		switch k[0] {
+		case 2:
+			// C-b
+			fmt.Print("◀")
+			line += "◀"
+		case 6:
+			// C-f
+			fmt.Print("▶")
+			line += "▶"
 		case 13:
+			// Enter
 			return line
+		case 16:
+			// C-p
+			fmt.Print("▲")
+			line += "▲"
+		case 14:
+			// C-n
+			fmt.Print("▼")
+			line += "▼"
+		case 27:
+			switch k[1] {
+			case 79:
+				// Arrow key check
+				switch k[2] {
+				case 65:
+					fmt.Print("▲")
+					line += "▲"
+				case 66:
+					fmt.Print("▼")
+					line += "▼"
+				case 67:
+					fmt.Print("▶")
+					line += "▶"
+				case 68:
+					fmt.Print("◀")
+					line += "◀"
+				}
+			}
 		case 127:
+			// Backspace
 			if len(line) > 0 {
 				line = line[0 : len(line)-1]
 			}
@@ -56,7 +93,7 @@ func getCommand() string {
 			rewrite(line)
 		default:
 			fmt.Print(string(k[0]))
-			line = line + string(k[0])
+			line += string(k[0])
 		}
 	}
 }
@@ -75,7 +112,7 @@ func readUserInput() {
 func main() {
 	readUserInput()
 
-	//fmt.Println(getKey())
+	// fmt.Println(getKey())
 
 	// rewrite()
 }
